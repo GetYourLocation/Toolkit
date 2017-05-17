@@ -1,6 +1,6 @@
 # Tools
 
-Tools for preprocessing training/testing data.
+Tools for processing training/testing data.
 
 ## 数据格式
 
