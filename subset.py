@@ -13,11 +13,11 @@ try:
     end_frame = int(sys.argv[3])
     label_name = sys.argv[4]
 except Exception as e:
-    print("Usage: python subset.py" +
+    print("Usage: python3 subset.py" +
           " <directory name> <begin frame> <end frame> <label>")
     sys.exit(0)
 
-DIR_FRAMES = "frames"
+DIR_FRAMES = "JPEGImages"
 FILENAME_POS = "pos.csv"
 FILENAME_SENSOR = "sensor.csv"
 FILENAME_CONFIG = "config.txt"
