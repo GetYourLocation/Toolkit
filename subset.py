@@ -8,12 +8,13 @@ import time
 
 try:
     ori_dir = os.path.join("data", sys.argv[1])
-    res_dir = os.path.join("data", sys.argv[1] + "-selected")
+    res_dir = os.path.join("data", sys.argv[1] + '-subset')
     beg_frame = int(sys.argv[2])
     end_frame = int(sys.argv[3])
+    label_name = sys.argv[4]
 except Exception as e:
-    print("Usage: python3 select_frames.py" +
-          " <directory name> <begin frame> <end frame>")
+    print("Usage: python subset.py" +
+          " <directory name> <begin frame> <end frame> <label>")
     sys.exit(0)
 
 DIR_FRAMES = "frames"
@@ -64,7 +65,7 @@ shutil.copyfile(os.path.join(ori_dir, FILENAME_POS),
 
 print("Generating %s..." % FILENAME_CONFIG)
 config_file = open(os.path.join(res_dir, FILENAME_CONFIG), 'w')
-config_file.write(str(len(res_sensor_data) - 1))
+config_file.write(str(len(res_sensor_data) - 1) + ' ' + label_name)
 config_file.close()
 
-print("Results have been written to '%s'." % res_dir)
+print("Results are written to '%s'." % res_dir)
