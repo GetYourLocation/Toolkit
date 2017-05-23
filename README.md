@@ -13,6 +13,7 @@
 - [工具包](#工具包)
     - [提取子集](#提取子集)
     - [制作训练集](#制作训练集)
+    - [重命名帧图片目录](#重命名帧图片目录)
     - [统一帧图片名](#统一帧图片名)
 - [License](#license)
 
@@ -97,6 +98,51 @@ $ python3 make_train.py human GYL -s
 ```
 
 运行结束后，目录 `JPEGImages` 下所有帧图片的文件名会加上 “作者名_时间戳_” 的前缀，并且会生成一个 `Annotations` 文件夹，里面存放着每一张图片对应的 XML 文件。
+
+<a name="重命名帧图片目录"></a>
+### 重命名帧图片目录
+
+Android 端采集到的帧图片目录名是 `frames`，制作训练集时需要将其改名为 `JPEGImages`，使用以下脚本完成：
+
+```bash
+$ python3 rename_frames.py <目录名>
+```
+
+这里传入的目录中包含若干需要重命名的数据集：
+
+```
+some-directory/
+  3-xxx-20170516150458/
+    frames/
+    pos.csv
+    sensor.csv
+  3-xxx-20170516151147/
+    frames/
+    pos.csv
+    sensor.csv
+  ...
+```
+
+示例：
+
+```bash
+$ python3 rename_frames.py some-directory
+```
+
+运行结束后，上述目录结构将变为：
+
+```
+some-directory/
+  3-xxx-20170516150458/
+    JPEGImages/  # 重命名完成
+    pos.csv
+    sensor.csv
+  3-xxx-20170516151147/
+    JPEGImages/  # 重命名完成
+    pos.csv
+    sensor.csv
+  ...
+```
 
 <a name="统一帧图片名"></a>
 ### 统一帧图片名
