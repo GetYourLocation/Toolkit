@@ -10,10 +10,16 @@ import shutil
 import sys
 import urllib.request
 import time
+import platform
 import matplotlib.pyplot as plt
 
-KCF_URL = 'https://github.com/GetYourLocation/KCFcpp/raw/master/bin/KCF'
-KCF_EXEC_PATH = os.path.join('bin', 'KCF')
+if platform.system() == 'Windows':
+    KCF_URL = 'https://github.com/GetYourLocation/KCFcpp/raw/master/bin/KCF.exe'
+    KCF_EXEC_PATH = os.path.join('bin', 'KCF.exe')
+else:
+    KCF_URL = 'https://github.com/GetYourLocation/KCFcpp/raw/master/bin/KCF'
+    KCF_EXEC_PATH = os.path.join('bin', 'KCF')
+
 KCF_RESULT_PATH = 'result.txt'
 KCF_SHOW_PARAM = ''
 XML_DIR = 'Annotations'
