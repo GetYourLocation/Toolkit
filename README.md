@@ -86,15 +86,17 @@ data/
 脚本用法如下：
 
 ```bash
-$ python3 make_train.py <数据集目录名> <作者名> [-s]
+$ python3 make_train.py <数据集目录名> <作者名> [-t]
 ```
 
-该脚本首先用 [KCF][KCF] 对每一帧进行标注，接着按照[此博客][blog_make_train]的方式生成符合 VOC 2007 规范的数据集。最后一个参数 `-s` 为可选参数，如果加上此参数，那么在运行 KCF 时每帧的标注结果将会以图片的方式显示出来。
+该脚本首先用 [KCF][KCF] 对每一帧进行标注，接着按照[此博客][blog_make_train]的方式生成符合 VOC 2007 规范的数据集，在使用此脚本之前请先确定数据集目录下的 `config.txt` 是否编写正确。
+
+**注：**脚本的最后一个参数 `-t` 为可选参数，如果加上此参数，那么脚本只会运行 KCF，不会生成 XML 文件，并且会把 KCF 每一帧的计算结果显示在图片上。（建议先加上此参数确定 `config.txt` 的编写是否合理，然后再关掉此参数制作训练集）
 
 示例：
 
 ```bash
-$ python3 make_train.py human GYL -s
+$ python3 make_train.py human GYL
 ```
 
 运行结束后，目录 `JPEGImages` 下所有帧图片的文件名会加上 “作者名_时间戳_” 的前缀，并且会生成一个 `Annotations` 文件夹，里面存放着每一张图片对应的 XML 文件。

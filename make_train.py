@@ -23,10 +23,10 @@ try:
     dataset = sys.argv[1]
     data_dir = os.path.join("data", dataset)
     author = sys.argv[2]
-    if (len(sys.argv) > 3 and sys.argv[3] == '-s'):
+    if (len(sys.argv) > 3 and sys.argv[3] == '-t'):
         KCF_SHOW_PARAM = ' show'
 except Exception as e:
-    print("Usage: python3 make_train.py <directory name> <author> [-s]")
+    print("Usage: python3 make_train.py <directory name> <author> [-t]")
     sys.exit(0)
 
 
@@ -46,6 +46,9 @@ print("Running KCF...")
 os.chdir(data_dir)
 val = os.system(os.path.join('..', '..', KCF_EXEC_PATH) + KCF_SHOW_PARAM)
 if val != 0:
+    sys.exit(0)
+
+if KCF_SHOW_PARAM != '':
     sys.exit(0)
 
 print("Generating XML...")
@@ -130,4 +133,5 @@ for i, line in enumerate(lines):
     xml_path = os.path.join(XML_DIR, new_frame_name.split('.')[0] + '.xml')
     with open(xml_path, 'w') as xml_file:
         xml_file.write(xml_str)
+print("")
 print("XMLs are saved to directory 'Annotations'.")
