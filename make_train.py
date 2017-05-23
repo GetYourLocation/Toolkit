@@ -9,8 +9,8 @@ import os
 import shutil
 import sys
 import urllib.request
-import cv2
 import time
+import matplotlib.pyplot as plt
 
 KCF_URL = 'https://github.com/GetYourLocation/KCFcpp/raw/master/bin/KCF'
 KCF_EXEC_PATH = os.path.join('bin', 'KCF')
@@ -60,7 +60,7 @@ for i, line in enumerate(lines):
     chunks = line.split(' ')
 
     # Read frame images
-    frame_img = cv2.imread(os.path.join(IMG_DIR, chunks[0]))
+    frame_img = plt.imread(os.path.join(IMG_DIR, chunks[0]))
     img_height, img_width, img_depth = frame_img.shape
 
     # Rename frame images
