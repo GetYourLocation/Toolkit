@@ -7,7 +7,7 @@ import sys
 try:
     frame_dir = os.path.join('data', sys.argv[1], 'JPEGImages')
 except Exception as e:
-    print("Usage: python3 norm.py <directory name>")
+    print("Usage: python3 %s <directory name>" % sys.argv[0])
     sys.exit(0)
 
 frame_files = os.listdir(frame_dir)

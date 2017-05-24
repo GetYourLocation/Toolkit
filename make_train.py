@@ -32,7 +32,7 @@ try:
     if (len(sys.argv) > 3 and sys.argv[3] == '-t'):
         KCF_SHOW_PARAM = ' show'
 except Exception as e:
-    print("Usage: python3 make_train.py <directory name> <author> [-t]")
+    print("Usage: python3 %s <directory name> <author> [-t]" % sys.argv[0])
     sys.exit(0)
 
 

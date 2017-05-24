@@ -13,7 +13,7 @@ try:
     end_frame = int(sys.argv[3])
     label_name = sys.argv[4]
 except Exception as e:
-    print("Usage: python3 subset.py" +
+    print("Usage: python3 %s" % sys.argv[0] +
           " <directory name> <begin frame> <end frame> <label>")
     sys.exit(0)
 
