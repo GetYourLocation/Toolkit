@@ -4,6 +4,7 @@
 from __future__ import print_function
 import os
 import sys
+import warnings
 import xml.dom.minidom
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
@@ -15,11 +16,15 @@ except Exception as e:
     print("Usage: python3 %s <directory name>" % sys.argv[0])
     sys.exit(0)
 
+warnings.filterwarnings("ignore", ".*GUI is implemented.*")
+
 xml_dir = os.path.join(data_dir, 'Annotations')
 img_dir = os.path.join(data_dir, 'JPEGImages')
 
 xml_cnt = 1
 xml_filenames = os.listdir(xml_dir)
+
+plt.ion()
 
 for xml_filename in xml_filenames:
     xml_path = os.path.join(xml_dir, xml_filename)
@@ -62,6 +67,6 @@ for xml_filename in xml_filenames:
         rect.set_edgecolor('yellow')
         rect.set_facecolor('none')
         ax.add_patch(rect)
-        plt.show(block=False)
+        plt.pause(0.001)
         input("")
         rect.remove()
