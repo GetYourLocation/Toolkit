@@ -5,3 +5,6 @@ result.txt
 Annotations
 KCF
 KCF.exe
+
+data/
+!data/shops
