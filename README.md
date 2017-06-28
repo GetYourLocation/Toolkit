@@ -1,6 +1,6 @@
 [VTB]: http://cvlab.hanyang.ac.kr/tracker_benchmark/datasets.html
 [KCF]: https://github.com/GetYourLocation/KCFcpp
-[blog_make_train]: http://blog.csdn.net/sinat_30071459/article/details/50723212
+[ShopPositioningServer]: https://github.com/GetYourLocation/ShopPositioningServer
 
 # Toolkit
 
@@ -91,9 +91,9 @@ data/
 $ python3 make_train.py <数据集目录名> <作者名> [-t]
 ```
 
-该脚本首先用 [KCF][KCF] 对每一帧进行标注，接着按照[此博客][blog_make_train]的方式生成符合 VOC 2007 规范的数据集，在使用此脚本之前请先确定数据集目录下的 `config.txt` 是否编写正确。
+该脚本首先用 KCF 算法对每一帧进行标注，因此在使用此脚本之前请先**确定**数据集目录下的 `config.txt` 是否符合 [KCF][KCF] 程序的输入要求。
 
-**注**：脚本的最后一个参数 `-t` 为可选参数，如果加上此参数，那么脚本只会运行 KCF，不会生成 XML 文件，并且会把 KCF 每一帧的计算结果显示在图片上。（建议先加上此参数确定 `config.txt` 的编写是否合理，然后再关掉此参数制作训练集）
+**注**：脚本的最后一个参数 `-t` 为可选参数，如果加上此参数，那么脚本只会运行 KCF，不会生成训练集文件，并且会把 KCF 每一帧的计算结果显示在图片上。（建议先加上此参数确定 KCF 标注是否合理，然后再关掉此参数制作训练集）
 
 示例：
 
@@ -101,7 +101,7 @@ $ python3 make_train.py <数据集目录名> <作者名> [-t]
 $ python3 make_train.py human GYL
 ```
 
-运行结束后，目录 `JPEGImages` 下所有帧图片的文件名会加上 “作者名_时间戳_” 的前缀，并且会生成一个 `Annotations` 文件夹，里面存放着每一张图片对应的 XML 文件。
+运行结束后，目录 `JPEGImages` 下所有帧图片的文件名会加上 “作者名_时间戳_” 的前缀，并且会生成一个 `数据集名_时间戳.csv` 训练集文件，用来训练 [ShopPositioningServer][ShopPositioningServer]。
 
 <a name="检验训练集"></a>
 ### 检验训练集

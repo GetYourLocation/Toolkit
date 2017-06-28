@@ -2,16 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-from xml.dom import minidom
-from xml.etree import ElementTree
-from xml.etree.ElementTree import Element, SubElement
 import os
 import shutil
 import sys
 import urllib.request
 import time
 import platform
-import matplotlib.pyplot as plt
+
+
+def timestamp():
+    return time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+
 
 if platform.system() == 'Windows':
     KCF_URL = 'https://github.com/GetYourLocation/KCFcpp/raw/master/bin/KCF.exe'
@@ -22,23 +23,19 @@ else:
 
 KCF_RESULT_PATH = 'result.txt'
 KCF_SHOW_PARAM = ''
-XML_DIR = 'Annotations'
 IMG_DIR = 'JPEGImages'
+TRAIN_HEADERS = ['imageFilename', 'lhz']
 
 try:
     dataset = sys.argv[1]
     data_dir = os.path.join("data", dataset)
+    data_train_path = "%s_%s.csv" % (dataset, timestamp())
     author = sys.argv[2]
     if (len(sys.argv) > 3 and sys.argv[3] == '-t'):
         KCF_SHOW_PARAM = ' show'
 except Exception as e:
     print("Usage: python3 %s <directory name> <author> [-t]" % sys.argv[0])
     sys.exit(0)
-
-
-def timestamp():
-    return time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-
 
 # Download KCF executable if not exist
 if os.path.exists(KCF_EXEC_PATH):
@@ -57,87 +54,39 @@ if val != 0:
 if KCF_SHOW_PARAM != '':
     sys.exit(0)
 
-print("Generating XML...")
-with open(KCF_RESULT_PATH, 'r') as resultFile:
-    lines = resultFile.readlines()
-shutil.rmtree(XML_DIR, ignore_errors=True)
-os.mkdir(XML_DIR)
-for i, line in enumerate(lines):
-    print('.', end='')
-    sys.stdout.flush()
+print("Writing training data...")
+with open(KCF_RESULT_PATH, 'r') as KCF_result_file:
+    lines = KCF_result_file.readlines()
+with open(data_train_path, 'w') as data_train_file:
+    for i, header in enumerate(TRAIN_HEADERS):
+        if (i > 0):
+            data_train_file.write(',')
+        data_train_file.write(header)
+    data_train_file.write('\n')
+    for i, line in enumerate(lines):
+        chunks = line.split(' ')
 
-    chunks = line.split(' ')
+        # Rename frame images and write image name
+        new_frame_name = '%s_%s_%s' % (author, timestamp(), chunks[0])
+        os.rename(os.path.join(IMG_DIR, chunks[0]),
+                  os.path.join(IMG_DIR, new_frame_name))
+        data_train_file.write(new_frame_name)
 
-    # Read frame images
-    frame_img = plt.imread(os.path.join(IMG_DIR, chunks[0]))
-    img_height, img_width, img_depth = frame_img.shape
+        chunks[4] = str(float(chunks[4]) - float(chunks[2]))
+        chunks[5] = str(float(chunks[5]) - float(chunks[3]))
 
-    # Rename frame images
-    new_frame_name = '%s_%s_%s' % (author, timestamp(), chunks[0])
-    os.rename(os.path.join(IMG_DIR, chunks[0]),
-              os.path.join(IMG_DIR, new_frame_name))
-
-    # Create XML document
-    root = Element('annotation')
-
-    folder = SubElement(root, 'folder')
-    folder.text = dataset
-    filename = SubElement(root, 'filename')
-    filename.text = new_frame_name
-
-    source = SubElement(root, 'source')
-    source_database = SubElement(source, 'database')
-    source_database.text = 'GYL Database'
-    source_annotation = SubElement(source, 'annotation')
-    source_annotation.text = 'GYL'
-    source_image = SubElement(source, 'image')
-    source_image.text = 'flickr'
-    source_flickrid = SubElement(source, 'flickrid')
-    source_flickrid.text = 'NULL'
-
-    owner = SubElement(root, 'owner')
-    owner_flickrid = SubElement(owner, 'flickrid')
-    owner_flickrid.text = 'NULL'
-    owner_name = SubElement(owner, 'name')
-    owner_name.text = 'GYL'
-
-    size = SubElement(root, 'size')
-    size_width = SubElement(size, 'width')
-    size_width.text = str(img_width)
-    size_height = SubElement(size, 'height')
-    size_height.text = str(img_height)
-    size_depth = SubElement(size, 'depth')
-    size_depth.text = str(img_depth)
-
-    segmented = SubElement(root, 'segmented')
-    segmented.text = '0'
-
-    object_ = SubElement(root, 'object')
-    object_name = SubElement(object_, 'name')
-    object_name.text = chunks[1]
-    object_pose = SubElement(object_, 'pose')
-    object_pose.text = 'Unspecified'
-    object_truncated = SubElement(object_, 'truncated')
-    object_truncated.text = '0'
-    object_difficult = SubElement(object_, 'difficult')
-    object_difficult.text = '0'
-
-    object_bndbox = SubElement(object_, 'bndbox')
-    object_bndbox_xmin = SubElement(object_bndbox, 'xmin')
-    object_bndbox_xmin.text = chunks[2]
-    object_bndbox_ymin = SubElement(object_bndbox, 'ymin')
-    object_bndbox_ymin.text = chunks[3]
-    object_bndbox_xmax = SubElement(object_bndbox, 'xmax')
-    object_bndbox_xmax.text = chunks[4]
-    object_bndbox_ymax = SubElement(object_bndbox, 'ymax')
-    object_bndbox_ymax.text = chunks[5]
-
-    # Write XML document to file
-    reparsed = minidom.parseString(ElementTree.tostring(root))
-    xml_str = reparsed.toprettyxml(indent='\t')
-    xml_str = xml_str[xml_str.index('\n') + 1:]
-    xml_path = os.path.join(XML_DIR, new_frame_name.split('.')[0] + '.xml')
-    with open(xml_path, 'w') as xml_file:
-        xml_file.write(xml_str)
-print("")
-print("XMLs are saved to directory 'Annotations'.")
+        # Write train data
+        for header in TRAIN_HEADERS[1:]:
+            data_train_file.write(',')
+            if (header == dataset):
+                for i in [2, 3, 4, 5]:
+                    if (i != 2):
+                        data_train_file.write(' ')
+                    data_train_file.write(chunks[i])
+            else:
+                data_train_file.write('-')
+        data_train_file.write('\n')
+        print('.', end='')
+        sys.stdout.flush()
+    print("")
+print("Training data saved to '%s'" % data_train_path)
