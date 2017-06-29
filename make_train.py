@@ -24,7 +24,7 @@ else:
 KCF_RESULT_PATH = 'result.txt'
 KCF_SHOW_PARAM = ''
 IMG_DIR = 'JPEGImages'
-TRAIN_HEADERS = ['imageFilename', 'lhz']
+TRAIN_LABEL_FILE = 'label.txt'
 
 try:
     dataset = sys.argv[1]
@@ -45,6 +45,12 @@ else:
     filename, headers = urllib.request.urlretrieve(KCF_URL, KCF_EXEC_PATH)
     print("KCF executable loaded to '%s'." % filename)
 
+print("Building data labels...")
+data_headers = ['imageFilename']
+with open(TRAIN_LABEL_FILE, 'r') as label_file:
+    for line in label_file.readlines():
+        data_headers.append(line.strip())
+
 print("Running KCF...")
 os.chdir(data_dir)
 val = os.system(os.path.join('..', '..', KCF_EXEC_PATH) + KCF_SHOW_PARAM)
@@ -55,7 +61,7 @@ print("Writing training data...")
 with open(KCF_RESULT_PATH, 'r') as KCF_result_file:
     lines = KCF_result_file.readlines()
 with open(data_train_path, 'w') as data_train_file:
-    for i, header in enumerate(TRAIN_HEADERS):
+    for i, header in enumerate(data_headers):
         if (i > 0):
             data_train_file.write(',')
         data_train_file.write(header)
@@ -63,7 +69,7 @@ with open(data_train_path, 'w') as data_train_file:
     for i, line in enumerate(lines):
         chunks = line.split(' ')
 
-        if (not (chunks[1] in TRAIN_HEADERS)):
+        if (not (chunks[1] in data_headers)):
             print("Invalid label name: %s" % chunks[1])
             sys.exit(1)
 
@@ -77,7 +83,7 @@ with open(data_train_path, 'w') as data_train_file:
         chunks[5] = str(float(chunks[5]) - float(chunks[3]))
 
         # Write train data
-        for header in TRAIN_HEADERS[1:]:
+        for header in data_headers[1:]:
             data_train_file.write(',')
             if (header == dataset):
                 for i in [2, 3, 4, 5]:
