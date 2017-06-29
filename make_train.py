@@ -48,11 +48,8 @@ else:
 print("Running KCF...")
 os.chdir(data_dir)
 val = os.system(os.path.join('..', '..', KCF_EXEC_PATH) + KCF_SHOW_PARAM)
-if val != 0:
-    sys.exit(0)
-
-if KCF_SHOW_PARAM != '':
-    sys.exit(0)
+if (val != 0 or KCF_SHOW_PARAM != ''):
+    sys.exit(val)
 
 print("Writing training data...")
 with open(KCF_RESULT_PATH, 'r') as KCF_result_file:
@@ -65,6 +62,10 @@ with open(data_train_path, 'w') as data_train_file:
     data_train_file.write('\n')
     for i, line in enumerate(lines):
         chunks = line.split(' ')
+
+        if (not (chunks[1] in TRAIN_HEADERS)):
+            print("Invalid label name: %s" % chunks[1])
+            sys.exit(1)
 
         # Rename frame images and write image name
         new_frame_name = '%s_%s_%s' % (author, timestamp(), chunks[0])
@@ -89,4 +90,4 @@ with open(data_train_path, 'w') as data_train_file:
         print('.', end='')
         sys.stdout.flush()
     print("")
-print("Training data saved to '%s'" % data_train_path)
+print("Training data saved to '%s'" % os.path.join(data_dir, data_train_path))

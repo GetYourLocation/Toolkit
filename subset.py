@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
 import os
 import sys
 import shutil
@@ -53,9 +52,6 @@ while i < len(frames):
         res_sensor_data.append(sensor_row)
         frame_cnt += 1
     i += 1
-    print('.', end='')
-    sys.stdout.flush()
-print("")
 
 print("Selecting sensor data...")
 res_sensor_file = open(os.path.join(res_dir, FILENAME_SENSOR), 'w')
