@@ -6,7 +6,7 @@ from PIL import Image
 import os
 import sys
 
-TARGET_SIZE = (336, 216)
+TARGET_SIZE = (420, 270)
 RESIZE_ALG = Image.LANCZOS
 
 try:
