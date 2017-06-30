@@ -85,7 +85,7 @@ with open(data_train_path, 'w') as data_train_file:
         # Write train data
         for header in data_headers[1:]:
             data_train_file.write(',')
-            if (header == dataset):
+            if (chunks[1] == header):
                 for i in [2, 3, 4, 5]:
                     if (i != 2):
                         data_train_file.write(' ')
