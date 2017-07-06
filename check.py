@@ -38,9 +38,9 @@ for line in lines[1:]:
             width = float(bbox_strs[2]) - x1
             height = float(bbox_strs[3]) - y1
             break
-    print("[%s] [%s] [%s]" % (chunks[0], label_name, bbox_str), end='')
-    sys.stdout.flush()
     img = plt.imread(os.path.join(IMG_DIR, chunks[0]))
+    print("[%s] [%d*%d] [%s] [%s]" % (chunks[0], img.shape[1], img.shape[0], label_name, bbox_str), end='')
+    sys.stdout.flush()
     plt.imshow(img)
     rect = Rectangle((x1, y1), width, height)
     rect.set_edgecolor('yellow')
