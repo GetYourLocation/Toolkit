@@ -79,9 +79,6 @@ with open(data_train_path, 'w') as data_train_file:
                   os.path.join(IMG_DIR, new_frame_name))
         data_train_file.write(new_frame_name)
 
-        chunks[4] = str(float(chunks[4]) - float(chunks[2]))
-        chunks[5] = str(float(chunks[5]) - float(chunks[3]))
-
         # Write train data
         for header in data_headers[1:]:
             data_train_file.write(',')

@@ -14,5 +14,8 @@ except Exception as e:
 files = os.listdir()
 for file in files:
     if (file != sys.argv[0]):
-        os.rename(file, '%s_%d.jpg' % (author, cnt))
+        if (author == '0'):
+            os.rename(file, '%d.jpg' % (cnt))
+        else:
+            os.rename(file, '%s_%d.jpg' % (author, cnt))
         cnt += 1
